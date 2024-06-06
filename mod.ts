@@ -7,7 +7,7 @@ export class Erowatch implements ErowatchInterface {
   #watcher: Deno.FsWatcher | null = null;
   #watcherCallbacks: Map<string, ReturnType<typeof debounce>> = new Map();
   #pathsMap: Map<string, string> = new Map();
-  #watching: boolean = false;
+  #isWatching: boolean = false;
 
   constructor(paths: string | string[], options?: ErowatchOptsInterface) {
     // TODO: ensure 'path' is passed
@@ -23,7 +23,7 @@ export class Erowatch implements ErowatchInterface {
 
   async #init() {
     this.#watcher = Deno.watchFs(Array.from(this.#pathsMap.values()));
-    if (!this.#watching) this.#watching = true;
+    if (!this.#isWatching) this.#isWatching = true;
     //console.log(magenta("Started listening from Erowatch..."));
     for await (const event of this.#watcher) {
       const { kind, paths } = event;
@@ -32,14 +32,18 @@ export class Erowatch implements ErowatchInterface {
   }
 
   add(paths: string | string[]): Erowatch {
-    if (this.#watching) {
+    if (this.#isWatching) {
+      // To prevent unnecessary stopping and starting of the process, make sure a new path was added before calling this.#init()
+      const prevSize = this.#pathsMap.size;
       if (typeof paths === "string") {
         this.#pathsMap.set(paths, paths);
       } else {
         this.#pathsMap = new Map([...this.#pathsMap, ...new Map(paths.map((path) => [path, path]))]);
       }
-      this.close();
-      this.#init();
+      if (this.#pathsMap.size > prevSize) {
+        this.close();
+        this.#init();
+      }
     }
     return this;
   }
@@ -50,14 +54,14 @@ export class Erowatch implements ErowatchInterface {
   }
 
   close() {
-    if (this.#watching) {
+    if (this.#isWatching) {
       //console.log(magenta("Closing from close()..."));
       this.#watcher?.close();
-      this.#watching = false;
+      this.#isWatching = false;
     }
   }
 
-  get watching() {
-    return this.#watching;
+  get isWatching() {
+    return this.#isWatching;
   }
 }

@@ -5,7 +5,7 @@ export interface ErowatchOptsInterface {
 }
 
 export interface ErowatchInterface {
-  watching: boolean;
+  isWatching: boolean;
   add: (paths: string | string[]) => Erowatch;
   on: (event: EroEvent, callback: EventCallback) => Erowatch;
   close: () => void;
