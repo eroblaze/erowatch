@@ -4,9 +4,11 @@ export interface ErowatchOptsInterface {
   debounce?: number;
 }
 
-export interface ErowatchInterface {
+export interface ErowatchInterface<T> {
+  size: number;
   isWatching: boolean;
-  add: (paths: string | string[]) => Erowatch;
-  on: (event: EroEvent, callback: EventCallback) => Erowatch;
+  add: (paths: string | string[]) => T;
+  on: (event: EroEvent, callback: EventCallback) => T;
+  watch: () => T;
   close: () => void;
 }
