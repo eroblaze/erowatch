@@ -74,11 +74,11 @@ export class Erowatch implements ErowatchInterface<Erowatch> {
     return this;
   }
 
-  get isWatching() {
+  get isWatching(): boolean {
     return this.#isWatching;
   }
 
-  get size() {
+  get size(): number {
     return this.#pathsMap.size;
   }
 
