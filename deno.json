@@ -1,6 +1,12 @@
 {
+  "name": "@ero/watch",
+  "version": "0.1.0",
+  "exports": "./mod.ts",
   "imports": {
     "@std/async": "jsr:@std/async@^0.224.1",
     "@std/fmt": "jsr:@std/fmt@^0.225.3"
+  },
+  "publish": {
+    "exclude": ["__tests__"]
   }
 }
