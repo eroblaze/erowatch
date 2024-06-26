@@ -1,5 +1,5 @@
-import { magenta, debounce } from "./dep.ts";
-import { ErowatchInterface, ErowatchOptsInterface, EroEvent, EventCallback } from "./types.ts";
+import { debounce } from "./dep.ts";
+import type { ErowatchInterface, ErowatchOptsInterface, EroEvent, EventCallback } from "./types.ts";
 import defaultOptions from "./defaults.ts";
 
 export class Erowatch implements ErowatchInterface<Erowatch> {
@@ -71,6 +71,23 @@ export class Erowatch implements ErowatchInterface<Erowatch> {
     if (!this.#isWatching) {
       this.#init();
     }
+    return this;
+  }
+
+  unwatch(paths: string | string[]): Erowatch {
+    // Some validations
+    this.close();
+    let cnt = 1;
+    const wasWatching = this.isWatching;
+    if (Array.isArray(paths)) cnt = paths.length;
+
+    for (let i = 0; i < cnt; i++) {
+      const path = Array.isArray(paths) ? paths[i] : paths;
+      this.#pathsMap.delete(path);
+    }
+
+    if (wasWatching) this.#init();
+
     return this;
   }
 

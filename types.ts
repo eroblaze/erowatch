@@ -10,5 +10,6 @@ export interface ErowatchInterface<T> {
   add: (paths: string | string[]) => T;
   on: (event: EroEvent, callback: EventCallback) => T;
   watch: () => T;
+  unwatch: (paths: string | string[]) => T;
   close: () => void;
 }
